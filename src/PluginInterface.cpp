@@ -12,7 +12,7 @@ extern "C" void AboutReport(rapidjson::Value& request,
         "description",
         Value().SetString("The financial status of a specific account over a given interval.",
                           allocator), allocator);
-    response.AddMember("type", REPORT_RANGE_ACCOUNT_TYPE, allocator);
+    response.AddMember("type", REPORT_RANGE_TYPE, allocator);
 }
 
 extern "C" void DestroyReport() {}
@@ -21,11 +21,11 @@ extern "C" void CreateReport(rapidjson::Value& request,
                              rapidjson::Value& response,
                              rapidjson::Document::AllocatorType& allocator,
                              CServerInterface* server) {
-    std::string group_mask;
+    int login = 370;;
     int from;
     int to;
-    if (request.HasMember("group") && request["group"].IsString()) {
-        group_mask = request["group"].GetString();
+    if (request.HasMember("login") && request["login"].IsNumber()) {
+        login = request["login"].GetInt();
     }
     if (request.HasMember("from") && request["from"].IsNumber()) {
         from = request["from"].GetInt();
@@ -38,10 +38,12 @@ extern "C" void CreateReport(rapidjson::Value& request,
     std::unordered_map<std::string, Total> totals_map;
 
     try {
-        server->GetAccountsEquitiesByGroup(from, to, group_mask, &equity_vector);
+        server->GetAccountsEquitiesByLogin(from, to, login, &equity_vector);
     } catch (const std::exception& e) {
         std::cerr << "[AccountEquityReportInterface]: " << e.what() << std::endl;
     }
+
+    std::cout << "equity_vector size: " << equity_vector.size() << std::endl;
 
     TableBuilder table_builder("AccountEquityReportTable");
 
