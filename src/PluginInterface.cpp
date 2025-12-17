@@ -43,6 +43,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
         std::cerr << "[AccountEquityReportInterface]: " << e.what() << std::endl;
     }
 
+
     std::cout << "equity_vector size: " << equity_vector.size() << std::endl;
 
     TableBuilder table_builder("AccountEquityReportTable");
