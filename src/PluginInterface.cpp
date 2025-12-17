@@ -12,7 +12,7 @@ extern "C" void AboutReport(rapidjson::Value& request,
         "description",
         Value().SetString("The financial status of a specific account over a given interval.",
                           allocator), allocator);
-    response.AddMember("type", REPORT_RANGE_TYPE, allocator);
+    response.AddMember("type", REPORT_RANGE_ACCOUNT_TYPE, allocator);
 }
 
 extern "C" void DestroyReport() {}
@@ -21,7 +21,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
                              rapidjson::Value& response,
                              rapidjson::Document::AllocatorType& allocator,
                              CServerInterface* server) {
-    int login = 370;;
+    int login;
     int from;
     int to;
     if (request.HasMember("login") && request["login"].IsNumber()) {
