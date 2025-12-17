@@ -35,21 +35,80 @@ extern "C" void CreateReport(rapidjson::Value& request,
     }
 
     std::vector<EquityRecord> equity_vector;
+    std::vector<UsdConvertedEquityRecord> usd_converted_equity_vector;
     std::unordered_map<std::string, Total> totals_map;
 
     try {
         server->GetAccountsEquitiesByLogin(from, to, login, &equity_vector);
+
+        for (const auto& equity_record : equity_vector) {
+            double multiplier = 1;
+            UsdConvertedEquityRecord usd_converted_equity_record;
+
+            if (equity_record.currency != "USD") {
+                server->CalculateConvertRateByCurrency(equity_record.currency, "USD", OP_SELL, &multiplier);
+            }
+
+            usd_converted_equity_record.create_time = equity_record.create_time;
+            usd_converted_equity_record.equity = equity_record.equity * multiplier;
+            usd_converted_equity_record.credit = equity_record.credit * multiplier;
+            usd_converted_equity_record.profit = equity_record.profit * multiplier;
+            usd_converted_equity_record.balance = equity_record.balance * multiplier;
+            usd_converted_equity_record.margin = equity_record.margin * multiplier;
+            usd_converted_equity_record.margin_free = equity_record.margin_free * multiplier;
+
+            usd_converted_equity_vector.emplace_back(usd_converted_equity_record);
+        }
     } catch (const std::exception& e) {
         std::cerr << "[AccountEquityReportInterface]: " << e.what() << std::endl;
     }
 
+    // Balance chart
+    const JSONArray balance_chart_data = utils::CreateBalanceChartData(usd_converted_equity_vector);
 
-    std::cout << "equity_vector size: " << equity_vector.size() << std::endl;
+    Node balance_chart_node = ResponsiveContainer({
+        LineChart({
+            XAxis({}, props({{"dataKey", "day"}})),
+            YAxis(),
+            Tooltip(),
+            Legend(),
 
+            Line({}, props({
+                {"type", "monotone"},
+                {"dataKey", "balance"},
+                {"stroke", "#4A90E2"}
+            })),
+
+            Line({}, props({
+                {"type", "monotone"},
+                {"dataKey", "credit"},
+                {"stroke", "#7ED321"}
+            })),
+
+            Line({}, props({
+                {"type", "monotone"},
+                {"dataKey", "equity"},
+                {"stroke", "#F5A623"}
+            })),
+
+            Line({}, props({
+                {"type", "monotone"},
+                {"dataKey", "profit"},
+                {"stroke", "#9013FE"}
+            }))
+        }, props({
+            {"data", balance_chart_data}
+        }))
+    }, props({
+        {"width", "100%"},
+        {"height", 300.0}
+    }));
+
+    // Main table
     TableBuilder table_builder("AccountEquityReportTable");
 
     table_builder.SetIdColumn("login");
-    table_builder.SetOrderBy("login", "DESC");
+    table_builder.SetOrderBy("CREATE_TIME", "DESC");
     table_builder.EnableAutoSave(false);
     table_builder.EnableRefreshButton(false);
     table_builder.EnableBookmarksButton(false);
@@ -77,9 +136,8 @@ extern "C" void CreateReport(rapidjson::Value& request,
     totals_map["USD"].currency = "USD";
 
     for (const auto& equity_record : equity_vector) {
-        double floating_pl = 0.0;
-
         double multiplier = 1.0;
+        double floating_pl = 0.0;
 
         if (equity_record.currency != "USD") {
             try {
@@ -144,7 +202,10 @@ extern "C" void CreateReport(rapidjson::Value& request,
     const Node table_node = Table({}, table_props);
 
     const Node report = Column({
-        h1({text("Daily Equity Report")}),
+        h1({text("Account Equity Report")}),
+        h2({text("Balance Chart")}),
+        balance_chart_node,
+        h2({text("Account Equity Table")}),
         table_node
     });
 

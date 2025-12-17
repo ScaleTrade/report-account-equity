@@ -108,4 +108,55 @@ namespace utils {
         const double factor = std::pow(10.0, digits);
         return std::trunc(value * factor) / factor;
     }
+
+    std::string FormatDateForChart(const time_t& time) {
+        std::tm tm{};
+        #ifdef _WIN32
+                localtime_s(&tm, &t);
+        #else
+                localtime_r(&time, &tm);
+        #endif
+                std::ostringstream oss;
+                oss << std::put_time(&tm, "%Y.%m.%d");
+                return oss.str();
+    }
+
+    JSONArray CreateBalanceChartData(const std::vector<UsdConvertedEquityRecord>& equities) {
+        std::map<std::string, BalanceChartDataPoint> daily_data;
+
+        for (const auto& equity : equities) {
+            std::string date = FormatDateForChart(equity.create_time);
+
+            auto& data_point = daily_data[date];
+            data_point.date = date;
+            data_point.balance = equity.balance;
+            data_point.credit  = equity.credit;
+            data_point.equity  = equity.equity;
+            data_point.profit  = equity.profit;
+        }
+
+        std::vector<BalanceChartDataPoint> data_points;
+        for (const auto& [date, data_point] : daily_data) {
+            data_points.push_back(data_point);
+        }
+
+        std::sort(data_points.begin(), data_points.end(),
+                [](const BalanceChartDataPoint& a,const BalanceChartDataPoint& b) {
+                        return a.date < b.date;
+                 });
+
+        JSONArray chart_data;
+        for (const auto& data_point : data_points) {
+            JSONObject point;
+            point["day"]   = JSONValue(data_point.date);
+            point["balance"] = JSONValue(static_cast<double>(data_point.balance));
+            point["credit"] = JSONValue(static_cast<double>(data_point.credit));
+            point["equity"] = JSONValue(static_cast<double>(data_point.equity));
+            point["profit"] = JSONValue(static_cast<double>(data_point.profit));
+
+            chart_data.emplace_back(point);
+        }
+
+        return chart_data;
+    }
 }

@@ -11,6 +11,8 @@
 #include "ast/Ast.hpp"
 #include <rapidjson/document.h>
 
+using namespace ast;
+
 namespace utils {
     void CreateUI(const ast::Node& node,
               rapidjson::Value& response,
@@ -19,4 +21,8 @@ namespace utils {
     std::string FormatTimestampToString(const time_t& timestamp);
 
     double TruncateDouble(const double& value, const int& digits);
+
+    std::string FormatDateForChart(const time_t& time);
+
+    JSONArray CreateBalanceChartData(const std::vector<UsdConvertedEquityRecord>& equities);
 }
