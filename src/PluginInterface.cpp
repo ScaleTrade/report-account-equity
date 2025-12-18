@@ -160,6 +160,9 @@ extern "C" void CreateReport(rapidjson::Value& request,
         totals_map["USD"].margin += equity_record.margin * multiplier;
         totals_map["USD"].margin_free += equity_record.margin_free * multiplier;
 
+
+        std::cout << equity_record.leverage << std::endl;
+
         table_builder.AddRow({
             utils::TruncateDouble(equity_record.login, 0),
             utils::FormatTimestampToString(equity_record.create_time),
