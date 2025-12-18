@@ -1,4 +1,4 @@
-#include "PluginInterface.hpp"
+#include "PluginInterface.h"
 
 using namespace ast;
 

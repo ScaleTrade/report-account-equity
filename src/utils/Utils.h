@@ -7,8 +7,8 @@
 #include <sstream>
 #include <unordered_map>
 #include <unordered_set>
-#include "Structures.hpp"
-#include "structures/PluginStructures.hpp"
+#include "Structures.h"
+#include "structures/PluginStructures.h"
 #include "ast/Ast.hpp"
 #include <rapidjson/document.h>
 
