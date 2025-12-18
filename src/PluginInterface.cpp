@@ -119,19 +119,18 @@ extern "C" void CreateReport(rapidjson::Value& request,
     table_builder.AddColumn({"login", "LOGIN", 1});
     table_builder.AddColumn({"create_time", "CREATE_TIME", 2});
     table_builder.AddColumn({"group", "GROUP", 3});
-    table_builder.AddColumn({"leverage", "LEVERAGE", 4});
-    table_builder.AddColumn({"balance", "BALANCE", 5});
-    table_builder.AddColumn({"prevbalance", "PREV_BALANCE", 6});
-    table_builder.AddColumn({"floating_pl", "FLOATING_PL", 7});
-    table_builder.AddColumn({"credit", "CREDIT", 8});
-    table_builder.AddColumn({"equity", "EQUITY", 9});
-    table_builder.AddColumn({"profit", "AMOUNT", 10});
-    table_builder.AddColumn({"storage", "SWAP", 11});
-    table_builder.AddColumn({"commission", "COMMISSION", 12});
-    table_builder.AddColumn({"margin", "MARGIN", 13});
-    table_builder.AddColumn({"margin_free", "MARGIN_FREE", 14});
-    table_builder.AddColumn({"margin_level", "MARGIN_LEVEL (%)", 15});
-    table_builder.AddColumn({"currency", "CURRENCY", 16});
+    table_builder.AddColumn({"balance", "BALANCE", 4});
+    table_builder.AddColumn({"prevbalance", "PREV_BALANCE", 5});
+    table_builder.AddColumn({"floating_pl", "FLOATING_PL", 6});
+    table_builder.AddColumn({"credit", "CREDIT", 7});
+    table_builder.AddColumn({"equity", "EQUITY", 8});
+    table_builder.AddColumn({"profit", "AMOUNT", 9});
+    table_builder.AddColumn({"storage", "SWAP", 10});
+    table_builder.AddColumn({"commission", "COMMISSION", 11});
+    table_builder.AddColumn({"margin", "MARGIN", 112});
+    table_builder.AddColumn({"margin_free", "MARGIN_FREE", 13});
+    table_builder.AddColumn({"margin_level", "MARGIN_LEVEL (%)", 14});
+    table_builder.AddColumn({"currency", "CURRENCY", 15});
 
     totals_map["USD"].currency = "USD";
 
@@ -160,14 +159,10 @@ extern "C" void CreateReport(rapidjson::Value& request,
         totals_map["USD"].margin += equity_record.margin * multiplier;
         totals_map["USD"].margin_free += equity_record.margin_free * multiplier;
 
-
-        std::cout << equity_record.leverage << std::endl;
-
         table_builder.AddRow({
             utils::TruncateDouble(equity_record.login, 0),
             utils::FormatTimestampToString(equity_record.create_time),
             equity_record.group,
-            utils::TruncateDouble(equity_record.leverage, 0),
             utils::TruncateDouble(equity_record.balance * multiplier, 2),
             utils::TruncateDouble(equity_record.prevbalance * multiplier, 2),
             utils::TruncateDouble(floating_pl * multiplier, 2),
