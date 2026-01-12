@@ -53,7 +53,7 @@ struct FilterConfig {
     FilterType type = FilterType::Search;
 
     // Тип операции поиска
-    std::optional<FilterMode> search_type;
+    std::optional<SearchType> search_type;
 
     // Режим обработки значений (строка / число)
     std::optional<FilterMode> mode;

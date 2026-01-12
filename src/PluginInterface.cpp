@@ -36,11 +36,13 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
     }
 
     std::vector<EquityRecord>              equity_vector;
+    std::vector<GroupRecord>               group_vector;
     std::vector<UsdConvertedEquityRecord>  usd_converted_equity_vector;
     std::unordered_map<std::string, Total> totals_map;
 
     try {
         server->GetAccountsEquitiesByLogin(from, to, login, &equity_vector);
+        server->GetAllGroups(&group_vector);
 
         for (const auto& equity_record : equity_vector) {
             double                   multiplier = 1;
@@ -103,6 +105,12 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
 
     FilterConfig date_time_filter;
     date_time_filter.type = FilterType::DateTime;
+
+    FilterConfig group_filter;
+    group_filter.type = FilterType::Select;
+    for (const auto& group : group_vector) {
+        group_filter.options.push_back({group.group, group.group});
+    }
 
     // Columns
     table_builder.AddColumn({"login", "LOGIN", 1, search_filter});
