@@ -11,7 +11,7 @@ extern "C" void AboutReport(rapidjson::Value&                   request,
     response.AddMember(
         "Summary of the financial status of a selected account over a specified period. Includes "
         "date, balance, previous balance, equity, credit, profit, floating P/L, swap, commission, "
-        "margin, free margin, margin level and account information.",
+        "margin, free margin, margin level and account information." ,
         Value().SetString("The financial status of a specific account over a given interval.",
                           allocator),
         allocator);
