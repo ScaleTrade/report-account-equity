@@ -2,8 +2,6 @@
 
 #include <string>
 
-#include <Structures.h>
-
 struct Total {
     std::string currency;
     double      equity;

@@ -11,7 +11,7 @@
 #include "Structures.h"
 #include "ast/Ast.hpp"
 #include "structures/ReportStructures.h"
-#include <rapidjson/document.h>
+#include "rapidjson/document.h"
 
 using namespace ast;
 
