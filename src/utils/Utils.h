@@ -8,7 +8,6 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "Structures.h"
 #include "ast/Ast.hpp"
 #include "rapidjson/document.h"
 #include "structures/ReportStructures.h"

@@ -1,8 +1,5 @@
 #pragma once
 
-#include "Structures.h"
-#include "ReportServerInterface.h"
-
 #include <iostream>
 #include <sstream>
 #include <cmath>
@@ -13,6 +10,7 @@
 #include <iomanip>
 #include <unordered_map>
 
+#include "ReportServerInterface.h"
 #include "ast/Ast.hpp"
 #include "rapidjson/document.h"
 #include "sbxTableBuilder/SBXTableBuilder.hpp"
