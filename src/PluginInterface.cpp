@@ -28,7 +28,7 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
     int from;
     int to;
 
-    std::cout << "API VERSION: " << server->GetApiVersion() << std::endl;
+    std::cout << "API VERSION: " << ReportServerInterface::GetApiVersion() << std::endl;
 
     // if (request.HasMember("login") && request["login"].IsNumber()) {
     //     login = request["login"].GetInt();
