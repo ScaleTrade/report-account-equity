@@ -18,6 +18,5 @@ add_library(AccountEquityReport SHARED ${SOURCES})
 target_include_directories(AccountEquityReport PRIVATE
         ${CMAKE_SOURCE_DIR}/include
         ${CMAKE_SOURCE_DIR}/api
-        ${CMAKE_SOURCE_DIR}/external
         ${CMAKE_SOURCE_DIR}/src
 )
