@@ -10,8 +10,8 @@
 
 #include "Structures.h"
 #include "ast/Ast.hpp"
-#include "structures/ReportStructures.h"
 #include "rapidjson/document.h"
+#include "structures/ReportStructures.h"
 
 using namespace ast;
 

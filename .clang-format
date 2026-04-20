@@ -52,21 +52,14 @@ SortIncludes: true
 IncludeBlocks: Regroup
 
 IncludeCategories:
-  # 1️⃣ STL
-  - Regex: '^<([a-z_]+)>'
+  - Regex: '^<.*>'
     Priority: 1
 
-  # 2️⃣ Third-party libraries (httplib + openssl + rapidjson)
-  - Regex: '^(<httplib/|<openssl/|<rapidjson/stb/|"(httplib|openssl|rapidjson|stb)/)'
+  - Regex: '^".*"'
     Priority: 2
 
-  # 3️⃣ Project headers (architecture order)
-  - Regex: '^<(config|db|repositories|models|network|services|validators|utils)/|"(config|db|repositories|models|network|services|validators|utils)/'
-    Priority: 3
-
-  # 4️⃣ Fallback
   - Regex: '.*'
-    Priority: 4
+    Priority: 3
 
 # ------------------------------------------------------------
 # Misc
