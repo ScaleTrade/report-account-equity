@@ -16,6 +16,7 @@ extern "C" void AboutReport(rapidjson::Value&                   request,
                           allocator),
         allocator);
     response.AddMember("type", static_cast<int>(ReportType::RangeAccount), allocator);
+    response.AddMember("id", "ACCOUNT_EQUITY_REPORT", allocator);
 }
 
 extern "C" void DestroyReport() {}
