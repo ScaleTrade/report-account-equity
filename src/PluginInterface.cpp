@@ -50,12 +50,13 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
             double                   multiplier = 1;
             UsdConvertedEquityRecord usd_converted_equity_record;
 
-            if (equity_record.currency != "USD") {
-                server->CalculateConvertRateByCurrency(equity_record.currency,
-                                                       "USD",
-                                                       static_cast<int>(ReportTradeCommand::Sell),
-                                                       &multiplier);
-            }
+            // Conversion disabled
+            // if (equity_record.currency != "USD") {
+            //     server->CalculateConvertRateByCurrency(equity_record.currency,
+            //                                            "USD",
+            //                                            static_cast<int>(ReportTradeCommand::Sell),
+            //                                            &multiplier);
+            // }
 
             usd_converted_equity_record.create_time = equity_record.create_time;
             usd_converted_equity_record.equity      = equity_record.equity * multiplier;
@@ -82,11 +83,8 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
              Legend(),
 
              Line({}, props({{"type", "monotone"}, {"dataKey", "balance"}, {"stroke", "#4A90E2"}})),
-
              Line({}, props({{"type", "monotone"}, {"dataKey", "credit"}, {"stroke", "#7ED321"}})),
-
              Line({}, props({{"type", "monotone"}, {"dataKey", "equity"}, {"stroke", "#F5A623"}})),
-
              Line({}, props({{"type", "monotone"}, {"dataKey", "profit"}, {"stroke", "#9013FE"}}))},
             props({{"data", balance_chart_data}}))},
         props({{"width", "100%"}, {"height", 300.0}}));
@@ -127,35 +125,33 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
     table_builder.AddColumn({"margin_level", "MARGIN_LEVEL (%)", 14, search_filter});
     table_builder.AddColumn({"currency", "CURRENCY", 15, search_filter});
 
-    totals_map["USD"].currency = "USD";
-
     for (const auto& equity_record : equity_vector) {
         double multiplier  = 1.0;
-        double floating_pl = 0.0;
+        double floating_pl = equity_record.equity - equity_record.balance;
 
-        if (equity_record.currency != "USD") {
-            try {
-                server->CalculateConvertRateByCurrency(equity_record.currency,
-                                                       "USD",
-                                                       static_cast<int>(ReportTradeCommand::Sell),
-                                                       &multiplier);
-            } catch (const std::exception& e) {
-                std::cerr << "[DailyEquityReportInterface]: " << e.what() << std::endl;
-            }
-        }
+        // Конвертация
+        // if (equity_record.currency != "USD") {
+        //     try {
+        //         server->CalculateConvertRateByCurrency(equity_record.currency,
+        //                                                "USD",
+        //                                                static_cast<int>(ReportTradeCommand::Sell),
+        //                                                &multiplier);
+        //     } catch (const std::exception& e) {
+        //         std::cerr << "[DailyEquityReportInterface]: " << e.what() << std::endl;
+        //     }
+        // }
 
-        floating_pl = equity_record.equity - equity_record.balance;
-
-        totals_map["USD"].equity += equity_record.equity * multiplier;
-        totals_map["USD"].credit += equity_record.credit * multiplier;
-        totals_map["USD"].floating_pl += floating_pl * multiplier;
-        totals_map["USD"].profit += equity_record.profit * multiplier;
-        totals_map["USD"].balance += equity_record.balance * multiplier;
-        totals_map["USD"].prevbalance += equity_record.prevbalance * multiplier;
-        totals_map["USD"].storage += equity_record.storage * multiplier;
-        totals_map["USD"].commission += equity_record.commission * multiplier;
-        totals_map["USD"].margin += equity_record.margin * multiplier;
-        totals_map["USD"].margin_free += equity_record.margin_free * multiplier;
+        totals_map[equity_record.currency].currency = equity_record.currency;
+        totals_map[equity_record.currency].equity += equity_record.equity * multiplier;
+        totals_map[equity_record.currency].credit += equity_record.credit * multiplier;
+        totals_map[equity_record.currency].floating_pl += floating_pl * multiplier;
+        totals_map[equity_record.currency].profit += equity_record.profit * multiplier;
+        totals_map[equity_record.currency].balance += equity_record.balance * multiplier;
+        totals_map[equity_record.currency].prevbalance += equity_record.prevbalance * multiplier;
+        totals_map[equity_record.currency].storage += equity_record.storage * multiplier;
+        totals_map[equity_record.currency].commission += equity_record.commission * multiplier;
+        totals_map[equity_record.currency].margin += equity_record.margin * multiplier;
+        totals_map[equity_record.currency].margin_free += equity_record.margin_free * multiplier;
 
         table_builder.AddRow({utils::TruncateDouble(equity_record.login, 0),
                               utils::FormatTimestampToString(equity_record.create_time),
@@ -174,21 +170,23 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
                               "USD"});
     }
 
-    // Total row
+    // Totals
     JSONArray totals_array;
-    totals_array.emplace_back(JSONObject{
-        {"equity", utils::TruncateDouble(totals_map["USD"].equity, 2)},
-        {"credit", utils::TruncateDouble(totals_map["USD"].credit, 2)},
-        {"floating_pl", utils::TruncateDouble(totals_map["USD"].floating_pl, 2)},
-        {"profit", utils::TruncateDouble(totals_map["USD"].profit, 2)},
-        {"prevbalance", utils::TruncateDouble(totals_map["USD"].prevbalance, 2)},
-        {"balance", utils::TruncateDouble(totals_map["USD"].balance, 2)},
-        {"storage", utils::TruncateDouble(totals_map["USD"].storage, 2)},
-        {"commission", utils::TruncateDouble(totals_map["USD"].commission, 2)},
-        {"margin", utils::TruncateDouble(totals_map["USD"].margin, 2)},
-        {"margin_free", utils::TruncateDouble(totals_map["USD"].margin_free, 2)},
-        {"currency", totals_map["USD"].currency},
-    });
+    for (const auto& [currency, total] : totals_map) {
+        totals_array.emplace_back(JSONObject{
+            {"equity", utils::TruncateDouble(total.equity, 2)},
+            {"credit", utils::TruncateDouble(total.credit, 2)},
+            {"floating_pl", utils::TruncateDouble(total.floating_pl, 2)},
+            {"profit", utils::TruncateDouble(total.profit, 2)},
+            {"prevbalance", utils::TruncateDouble(total.prevbalance, 2)},
+            {"balance", utils::TruncateDouble(total.balance, 2)},
+            {"storage", utils::TruncateDouble(total.storage, 2)},
+            {"commission", utils::TruncateDouble(total.commission, 2)},
+            {"margin", utils::TruncateDouble(total.margin, 2)},
+            {"margin_free", utils::TruncateDouble(total.margin_free, 2)},
+            {"currency", total.currency},
+        });
+    }
 
     table_builder.SetTotalData(totals_array);
 
