@@ -19,6 +19,8 @@
 #include "utils/Utils.h"
 
 extern "C" {
+    int GetReportApiVersion();
+
     void AboutReport(rapidjson::Value& request,
                      rapidjson::Value& response,
                      rapidjson::Document::AllocatorType& allocator,
