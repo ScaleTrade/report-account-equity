@@ -179,13 +179,4 @@ namespace utils {
         }
         return out;
     }
-
-    void WriteAccessError(const ValidationResult&             validation_result,
-                          rapidjson::Value&                   response,
-                          rapidjson::Document::AllocatorType& allocator) {
-        response.AddMember("status", "error", allocator);
-        response.AddMember("code", validation_result.code, allocator);
-        response.AddMember(
-            "message", rapidjson::Value(validation_result.message.c_str(), allocator), allocator);
-    }
 } // namespace utils
