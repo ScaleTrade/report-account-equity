@@ -39,6 +39,30 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
 
         std::cerr << "[AccountEquityReportInterface]: " << validation_result.code
                   << ", message: " << validation_result.message << std::endl;
+
+        const Node report =
+            div({h2({text("Access Denied")},
+                    props({{"style",
+                            JSONValue(JSONObject{{"margin", JSONValue("0 0 8px 0")},
+                                                 {"color", JSONValue("#dc2626")}})}})),
+                 p({text("Code: " + std::to_string(validation_result.code))},
+                   props({{"style",
+                           JSONValue(JSONObject{{"margin", JSONValue("0 0 4px 0")},
+                                                {"fontWeight", JSONValue("600")}})}})),
+                 p({text(validation_result.message)},
+                   props({{"style",
+                           JSONValue(JSONObject{{"margin", JSONValue("0")},
+                                                {"color", JSONValue("#374151")}})}}))},
+                props({{"style",
+                        JSONValue(JSONObject{{"maxWidth", JSONValue("400px")},
+                                             {"margin", JSONValue("40px auto")},
+                                             {"padding", JSONValue("20px")},
+                                             {"border", JSONValue("1px solid #fca5a5")},
+                                             {"borderRadius", JSONValue("8px")},
+                                             {"background", JSONValue("#fef2f2")},
+                                             {"fontFamily", JSONValue("sans-serif")}})}}));
+
+        utils::CreateUI(report, response, allocator);
         return;
     }
 

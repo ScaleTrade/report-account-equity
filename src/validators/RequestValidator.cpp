@@ -146,7 +146,7 @@ ValidationResult RequestValidator::ValidateRangeGroup(const rapidjson::Value& re
     }
 
     const rapidjson::Value& access = request["__access"];
-    const std::string groups = access["groups"].GetString();
+    const std::string       groups = access["groups"].GetString();
 
     if (groups == "*") {
         result.allowed = true;
@@ -184,7 +184,7 @@ ValidationResult RequestValidator::ValidateDailyGroup(const rapidjson::Value& re
 }
 
 ValidationResult RequestValidator::ValidateRangeAccount(const rapidjson::Value& request,
-                                                      ReportServerInterface*  server) {
+                                                        ReportServerInterface*  server) {
     ValidationResult result;
 
     if (!request.HasMember("login") || !request["login"].IsNumber()) {
@@ -233,9 +233,8 @@ ValidationResult RequestValidator::ValidateRangeAccount(const rapidjson::Value& 
     if (allowed_groups.find(account_record.group) == allowed_groups.end()) {
         result.allowed = false;
         result.code    = 403;
-        result.message =
-            "ValidateRangeAccount: access denied for group '" +
-            std::string(account_record.group) + "'";
+        result.message = "ValidateRangeAccount: access denied for group '" +
+                         std::string(account_record.group) + "'";
         return result;
     }
 
