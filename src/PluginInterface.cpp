@@ -41,16 +41,14 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
                   << ", message: " << validation_result.message << std::endl;
 
         const Node report = div({
-            h2({text("Access Denied")}, props({
+            h1({text("Access Denied")}, props({
                 {"style", JSONValue(JSONObject{ {"color", JSONValue("#dc2626")} })}
             })),
-            p({text("Code: " + std::to_string(validation_result.code))}),
-            p({text(validation_result.message)}, props({
+            h2({text("Code: " + std::to_string(validation_result.code))}),
+            h2({text(validation_result.message)}, props({
                 {"style", JSONValue(JSONObject{ {"color", JSONValue("gray")} })}
             }))
         });
-
-        utils::CreateUI(report, response, allocator);
 
         utils::CreateUI(report, response, allocator);
         return;
