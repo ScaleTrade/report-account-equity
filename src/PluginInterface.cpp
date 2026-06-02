@@ -35,8 +35,6 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
         RequestValidator::ValidateRequest(report_type, request, server);
 
     if (!validation_result.allowed) {
-        utils::WriteAccessError(validation_result, response, allocator);
-
         std::cerr << "[AccountEquityReportInterface]: " << validation_result.code
                   << ", message: " << validation_result.message << std::endl;
 
