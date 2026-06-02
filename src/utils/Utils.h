@@ -4,6 +4,7 @@
 #include <cmath>
 #include <ctime>
 #include <iomanip>
+#include <set>
 #include <sstream>
 #include <unordered_map>
 #include <unordered_set>
@@ -11,6 +12,7 @@
 #include "ast/Ast.hpp"
 #include "rapidjson/document.h"
 #include "structures/ReportStructures.h"
+#include "structures/ValidationResult.h"
 
 using namespace ast;
 
@@ -27,4 +29,12 @@ namespace utils {
     std::string FormatDateForChart(const time_t& time);
 
     JSONArray CreateBalanceChartData(const std::vector<UsdConvertedEquityRecord>& equities);
+
+    std::string Trim(const std::string& str);
+
+    std::set<std::string> SplitToSet(const std::string& str);
+
+    void WriteAccessError(const ValidationResult&             validation_result,
+                          rapidjson::Value&                   response,
+                          rapidjson::Document::AllocatorType& allocator);
 } // namespace utils

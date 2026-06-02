@@ -13,9 +13,11 @@
 #include "ReportServerInterface.h"
 #include "ast/Ast.hpp"
 #include "rapidjson/document.h"
+#include "validators/RequestValidator.h"
 #include "sbxTableBuilder/SBXTableBuilder.hpp"
 #include "structures/ReportStructures.h"
 #include "structures/ReportType.h"
+#include "structures/ValidationResult.h"
 #include "utils/Utils.h"
 
 extern "C" {

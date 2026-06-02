@@ -29,19 +29,26 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
                              rapidjson::Value&                   response,
                              rapidjson::Document::AllocatorType& allocator,
                              ReportServerInterface*              server) {
-    int login;
-    int from;
-    int to;
+    // Validation
+    constexpr ReportType   report_type = ReportType::RangeAccount;
+    const ValidationResult validation_result =
+        RequestValidator::ValidateRequest(report_type, request, server);
 
-    if (request.HasMember("login") && request["login"].IsNumber()) {
-        login = request["login"].GetInt();
+    if (!validation_result.allowed) {
+        utils::WriteAccessError(validation_result, response, allocator);
+
+        std::cerr << "[AccountEquityReportInterface]: " << validation_result.code
+                  << ", message: " << validation_result.message << std::endl;
+        return;
     }
-    if (request.HasMember("from") && request["from"].IsNumber()) {
-        from = request["from"].GetInt();
-    }
-    if (request.HasMember("to") && request["to"].IsNumber()) {
-        to = request["to"].GetInt();
-    }
+
+    std::cout << "[AccountEquityReportInterface]: " << validation_result.code
+              << ", message: " << validation_result.message << std::endl;
+
+    // Execution
+    int login = request["login"].GetInt();
+    int from  = request["from"].GetInt();
+    int to    = request["to"].GetInt();
 
     std::vector<ReportEquityRecord>        equity_vector;
     std::vector<UsdConvertedEquityRecord>  usd_converted_equity_vector;
