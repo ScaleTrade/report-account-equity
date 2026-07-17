@@ -135,10 +135,10 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
     table_builder.AddColumn({"group", "GROUP", 3});
     table_builder.AddColumn({"balance", "BALANCE", 4, search_filter});
     table_builder.AddColumn({"prevbalance", "PREV_BALANCE", 5, search_filter});
-    table_builder.AddColumn({"floating_pl", "FLOATING_PL", 6, search_filter});
+    table_builder.AddColumn({"floating_pl", "NET_PROFIT", 6, search_filter});
     table_builder.AddColumn({"credit", "CREDIT", 7, search_filter});
     table_builder.AddColumn({"equity", "EQUITY", 8, search_filter});
-    table_builder.AddColumn({"profit", "AMOUNT", 9, search_filter});
+    table_builder.AddColumn({"profit", "GROSS_PROFIT", 9, search_filter});
     table_builder.AddColumn({"storage", "SWAP", 10, search_filter});
     table_builder.AddColumn({"commission", "COMMISSION", 11, search_filter});
     table_builder.AddColumn({"margin", "MARGIN", 112, search_filter});
@@ -148,7 +148,7 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
 
     for (const auto& equity_record : equity_vector) {
         double multiplier  = 1.0;
-        double floating_pl = equity_record.equity - equity_record.balance;
+        double floating_pl = equity_record.profit + equity_record.commission + equity_record.storage;
 
         // Конвертация
         // if (equity_record.currency != "USD") {
