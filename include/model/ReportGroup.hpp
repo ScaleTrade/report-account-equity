@@ -33,7 +33,11 @@ struct ReportGroupRecordSec {
     double comm_tax = 0.0;
     int comm_agent_lots = 0;
     int freemargin_mode = 0;
-    int reserved[3] = {0, 0, 0};
+    // Spread fields occupy the former reserved slots.
+    int spread_enable = 0;
+    int spread = 0;
+    int spread_balance = 0;
+    int commission_enable = 0;
 };
 
 struct ReportGroupRecordMargin {
@@ -46,6 +50,10 @@ struct ReportGroupRecordMargin {
     int spread = 0;
     int spread_balance = 0;
     int reserved[7] = {0, 0, 0, 0, 0, 0, 0};
+    int commission_enable = 0;
+    double comm_base = 0.0;
+    int comm_type = 0;
+    int comm_lots = 0;
 };
 
 struct ReportGroupRecord {
@@ -101,5 +109,7 @@ struct ReportGroupRecord {
     int archive_pending_period = 0;
     unsigned int news_languages[8] = {0, 0, 0, 0, 0, 0, 0, 0};
     unsigned int news_languages_total = 0;
-    int reserved[16] = {};
+    int deposit_reversal_policy = 0;
+    int stopout_close_policy = 0;
+    int reserved[14] = {};
 };

@@ -84,4 +84,8 @@ struct ReportSymbolRecord {
     int swap_openprice = 0;
     int swap_variation_margin = 0;
     int unused[21] = {};
+    int commission_enable = 0;
+    double comm_base = 0.0;
+    int comm_type = 0;
+    int comm_lots = 0;
 };

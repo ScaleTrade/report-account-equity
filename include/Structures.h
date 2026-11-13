@@ -43,6 +43,7 @@ enum ReturnCodes {
     //--- Groups errors
     RET_GROUP_NOT_FOUND = 28,        //  Пользователь не найден
     RET_GROUP_USE_BY_USER,           //  Group use by accounts
+    RET_GROUP_CURRENCY_CHANGE_FORBIDDEN = 30, // Group currency cannot change while accounts are assigned
 
     //--- Symobls errors
     RET_SEC_USE_BY_SYMBOL = 32,     // Группа смиволов используется символом
@@ -196,7 +197,8 @@ enum {
     SESSION_FIX,                            // Добавлена новая запись
     SESSION_CUSTOMER = 9,                   // Customer session
     SESSION_CRM_MANAGER = 10,               // Добавлена новая запись
-    SESSION_CRM_ADMIN                       // Добавлена новая запись
+    SESSION_CRM_ADMIN,                      // Добавлена новая запись
+    SESSION_AFFILIATE = 12                  // Affiliate cabinet session
 };
 
 //+------------------------------------------------------------------+
@@ -343,6 +345,7 @@ inline std::string FormatError(const int retcode) {
 
       // //--- Group errors
        {RET_GROUP_USE_BY_USER,           "Group use by active accounts"      },
+       {RET_GROUP_CURRENCY_CHANGE_FORBIDDEN, "Group currency cannot be changed while accounts are assigned" },
        // {RET_GROUP_BAD_STOPS,             "wrong stops level"},
 
       // //--- trade errors
@@ -371,8 +374,8 @@ inline std::string FormatError(const int retcode) {
        {RET_TRADE_TOO_MANY_ORDERS,       "Too many orders"},
        {RET_TRADE_HEDGE_PROHIBITED,      "Hedge is prohibited"},
        {RET_TRADE_PROHIBITED_BY_FIFO,    "Prohibited by fifo rule"},
-       {RET_DUPLICATE_RECORD,            "Попытка создание уже существующего трейда"},
-       {RET_TRADE_SEC_NOT_FOUND,         "Не нашел активную символ-группу (sec) в группе пользователя"},
+       {RET_DUPLICATE_RECORD,            "Duplicate trade creation attempt"},
+       {RET_TRADE_SEC_NOT_FOUND,         "No active symbol group found for user group"},
        {RET_TRADE_INVALID_SL_TP,         "Invalid SL or TP"},
        {RET_TRADE_EXIST,                 "Trade exist"},
        {RET_TRADE_LIMIT_REACHED,         "Trades limit reached"},
@@ -484,6 +487,7 @@ inline std::string FormatErrorCode(const int retcode) {
 
         { RET_GROUP_NOT_FOUND, "RET_GROUP_NOT_FOUND" },
         { RET_GROUP_USE_BY_USER, "RET_GROUP_USE_BY_USER" },
+        { RET_GROUP_CURRENCY_CHANGE_FORBIDDEN, "RET_GROUP_CURRENCY_CHANGE_FORBIDDEN" },
 
         { RET_SEC_USE_BY_SYMBOL, "RET_SEC_USE_BY_SYMBOL" },
         { RET_SYMBOL_USE_BY_TRADE, "RET_SYMBOL_USE_BY_TRADE" },
@@ -643,6 +647,7 @@ inline int FormatWebStatus(const int retcode) {
         case RET_DUPLICATE_RECORD:
         case RET_CFG_DUPLICATE:
         case RET_CFG_NOT_EMPTY:
+        case RET_GROUP_CURRENCY_CHANGE_FORBIDDEN:
             return 409;
         case RET_TRADE_MARKET_CLOSED:
             return 423;

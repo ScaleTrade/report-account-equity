@@ -15,7 +15,7 @@
 
 class Core;
 
-inline constexpr int REPORT_SERVER_API = 4;
+inline constexpr int REPORT_SERVER_API = 5;
 
 #if defined(__GNUC__)
 #define REPORT_MODULE_EXPORT __attribute__((visibility("default")))
